@@ -1,13 +1,19 @@
-FROM node:14
+FROM node:20-alpine
 
 WORKDIR /app
 
-COPY ./package.json .
+COPY package*.json ./
 
-RUN npm install
+RUN npm install --only=production
 
-COPY . /app
+COPY . .
 
 EXPOSE 3000
 
-CMD [ "npm", "start" ]
+ENV NODE_ENV=production
+
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+
+USER appuser
+
+CMD ["npm", "start"]
